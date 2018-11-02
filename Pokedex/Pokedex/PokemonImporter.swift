@@ -13,14 +13,22 @@ var foundPokemon: Pokemon? //Global so I can reference it anywhere.
 
 class PokemonImporter {
     
+    var webPoke: Pokemon?
+    
+    
 //Import Pokemon from Pokemon API
 
 let pokemonAPI = URL(string: "https://pokeapi.co/api/v2/")!
 
 func getPokemon(searchedPokemon: String, completion: @escaping (Error?) -> Void) {
+    //First of all...
+    guard var grabbedPoke = webPoke else { return }
     
-    var url = pokemonAPI.appendingPathComponent("pokemon") //Adds /pokemon/ to base URL
-    url.appendPathComponent(searchedPokemon.lowercased()) //Appends the name of the searched Pokemon to the base URL/pokemon/
+    //Adds /pokemon/ to base URL
+    var url = pokemonAPI.appendingPathComponent("pokemon")
+    
+    //Appends the name of the searched Pokemon to the base URL/pokemon/
+    url.appendPathComponent(searchedPokemon.lowercased())
     
     print(url) //Making sure I'm accessing the right API.
     
@@ -35,19 +43,24 @@ func getPokemon(searchedPokemon: String, completion: @escaping (Error?) -> Void)
             return
         }
         
-        guard let foundData = data else { return } //Assigning the data that's fetched to a property for easy manipulation later.
+        //Assigning the data that's fetched to a property for easy manipulation later.
+        guard let foundData = data else {
         
-            //NSLog("Data was not recieved. \(error?.localizedDescription)") //Print this to the Debugger log if there's an error.
+        NSLog("Data was not recieved.") //Print this to the Debugger log if there's an error.
             
-            //completion(error) //Implement the error message if we fail to get data.
+        completion(error) //Implement the error message if we fail to get data.
             
-           
+            return }
         
         do { //Same Do-Catch statement from normal Persistence but from Data above not local file
             let jsonDecoder = JSONDecoder()
             jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
             let decodedPokemon = try jsonDecoder.decode(Pokemon.self, from: foundData)
-            foundPokemon = decodedPokemon //Assign the decoded info where you want.
+            grabbedPoke = decodedPokemon //Put decoded Pokemon info into a property
+            
+            //Assign the decoded info property to the global Pokemon
+            foundPokemon = grabbedPoke
+            
             completion(nil)//Set completion to nothing since decoding worked.
         }
         catch { //In case Decoding doesn't work.
@@ -57,9 +70,15 @@ func getPokemon(searchedPokemon: String, completion: @escaping (Error?) -> Void)
                 }
         }.resume() //Resumes the fetch function if it's been suspended e.g. because of errors.
     }//End of Get Pokemon Info function.
-
+    
+    
+    //Get Pokemon Image
     func grabImage(searchedPokemon: Pokemon, completion: @escaping (Error?, Pokemon?) -> Void) {
-        guard let requestURL = URL(string: (foundPokemon?.sprites.frontDefault)!) else {
+        //First of all...
+        guard var grabbedPoke = webPoke else { return }
+        
+        
+        guard let requestURL = URL(string: ((grabbedPoke.sprites.first?.pokemonSprite.frontDefault)!)) else {
             NSLog("Couldn't get Pokemon image")
             completion(NSError(), nil)
             return
@@ -78,8 +97,12 @@ func getPokemon(searchedPokemon: String, completion: @escaping (Error?) -> Void)
                 return
             }
             
-            foundPokemon?.image = data
-            completion(nil, foundPokemon)
+            grabbedPoke.image = data //Put the decoded image data into a property
+            completion(nil, grabbedPoke)
+            
+            //Assign the decoded image property to the global Pokemon
+            foundPokemon?.image = grabbedPoke.image
+            
             return
             
             }.resume()

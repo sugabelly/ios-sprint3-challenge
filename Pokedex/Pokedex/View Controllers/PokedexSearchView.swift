@@ -18,9 +18,10 @@ class PokedexSearch: UIViewController, UISearchBarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadPokemonResult()
         
         pokeSearchBar.delegate = self
+        loadPokemonResult()
+
     }
     
     //Outlets
@@ -54,8 +55,8 @@ class PokedexSearch: UIViewController, UISearchBarDelegate {
             foundPokeName.text = pokemon.name
             foundPokeID.text = "\(pokemon.id)"
             foundPokeAbility.text = pokemon.abilities.first?.ability.name
-            foundPokeType.text = pokemon.types.first?.slot.description
-            //foundPokePhoto.image = pokemon.sprite
+            foundPokeType.text = pokemon.types.first?.pokemonType.name
+            //foundPokePhoto.image?.pngData() = pokemon.image
         } else {
             foundPokeName.text = "Not found"
             foundPokeID.text = "Not found"
