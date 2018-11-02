@@ -10,14 +10,17 @@ import Foundation
 import UIKit
 
 class PokedexSearch: UIViewController, UISearchBarDelegate {
+    //Referencing Properties
+    var pokeMaster: PokemonManager?
+
     
     //Load the view data
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadPokemonResult()
         
         pokeSearchBar.delegate = self
-        loadPokemonResult()
     }
     
     //Outlets
@@ -28,13 +31,9 @@ class PokedexSearch: UIViewController, UISearchBarDelegate {
     @IBOutlet weak var foundPokeAbility: UILabel!
     @IBOutlet weak var foundPokeType: UILabel!
     
-    //Properties
-    var pokeMaster: PokemonManager?
-
-    
     //Perform the Search
-    
-    func didSearch(_ pokeSearchBar: UISearchBar ) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+
         guard let pokeQuery = pokeSearchBar.text else { return } //Unwrap
         
         //Below is the JSON action that pulls the searched term from the API.
@@ -55,7 +54,8 @@ class PokedexSearch: UIViewController, UISearchBarDelegate {
             foundPokeName.text = pokemon.name
             foundPokeID.text = "\(pokemon.id)"
             foundPokeAbility.text = pokemon.abilities.first?.name
-            foundPokeType.text = pokemon.type.first?.name
+            foundPokeType.text = pokemon.types.first?.name
+            //foundPokePhoto.image = pokemon.sprite
         } else {
             foundPokeName.text = "Not found"
             foundPokeID.text = "Not found"

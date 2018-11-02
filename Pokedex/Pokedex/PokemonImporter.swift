@@ -43,6 +43,7 @@ func getPokemon(searchedPokemon: String, completion: @escaping (Error?) -> Void)
         
         do { //Same Do-Catch statement from normal Persistence but from Data above not local file
             let jsonDecoder = JSONDecoder()
+            jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
             let decodedPokemon = try jsonDecoder.decode(Pokemon.self, from: data)
             foundPokemon = decodedPokemon //Assign the decoded info where you want.
             completion(nil)//Set completion to nothing since decoding worked.
@@ -51,8 +52,35 @@ func getPokemon(searchedPokemon: String, completion: @escaping (Error?) -> Void)
             NSLog("Error: \(error.localizedDescription)")
             completion(error) //Show error message in Debugger log.
             return
-        }
+                }
         }.resume() //Resumes the fetch function if it's been suspended e.g. because of errors.
-}//End of Fetch function.
+    }//End of Get Pokemon Info function.
 
+    func grabImage(searchedPokemon: Pokemon, completion: @escaping (Error?, Pokemon?) -> Void) {
+        guard let requestURL = URL(string: (foundPokemon?.sprite.frontDefault)!) else {
+            NSLog("Couldn't get Pokemon image")
+            completion(NSError(), nil)
+            return
+        }
+        
+        URLSession.shared.dataTask(with: requestURL) { (data, _, error) in
+            if let error = error {
+                NSLog("Error fetching image: \(error)")
+                completion(error, nil)
+                return
+            }
+            
+            guard let data = data else {
+                NSLog("No data was returned.")
+                completion(NSError(), nil)
+                return
+            }
+            
+            foundPokemon?.image = data
+            completion(nil, foundPokemon)
+            return
+            
+            }.resume()
+    }
+    
 }
