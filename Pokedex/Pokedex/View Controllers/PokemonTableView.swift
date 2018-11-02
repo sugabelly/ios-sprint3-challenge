@@ -11,23 +11,44 @@ import UIKit
 
 class PokemonTableView: UITableViewController {
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return PokemonManager().pokeball.count
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        DispatchQueue.main.async { //Do the reload in the background of the main thread
+            self.tableView.reloadData() //Reload the table with current data
+        }
     }
     
+    //Reference for easy manipulation below
+    let pokeMaster = PokemonManager()
+    
+    //Set number of rows
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return pokeMaster.pokeball.count
+    }
+    
+    //Display the Table Cells
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "pokeCell")
         
-        cell.textLabel?.text = PokemonManager().pokeball[indexPath.row].name
+        cell.textLabel?.text = pokeMaster.pokeball[indexPath.row].name
         //cell.detailTextLabel?.text = PokemonManager().pokeball[indexPath.row].ty
         
         return cell
     }
     
-    //Push data about selected Pokemon to other VCs through Segues.
-    let pokeMaster = PokemonManager() //Assigned for easy manipulation below.
+    //Allow Swipe to Delete
     
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == UITableViewCell.EditingStyle.delete { //If there's a swipe to delete...
+            
+           pokeMaster.pokeball.remove(at: indexPath.row) //Delete the Pokemon at the index that matches that row
+        }
+    }
+    
+    //Push data about selected Pokemon to other VCs through Segues.
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) { //Push this info to next VC
         if segue.identifier == "PokeSearch" { //If the navigation is to search
             let searchVC = segue.destination as! PokedexSearch //Make search VC easy to reference

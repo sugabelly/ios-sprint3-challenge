@@ -24,6 +24,12 @@ class SinglePokemonView: UIViewController {
     
     func displayPokemon() {
         
+        pokeName.text = myPokemon?.name
+        pokeID.text = "\(String(describing: myPokemon?.id))"
+        //pokePhoto.image =
+        pokeAbility.text = myPokemon?.abilities.first?.name
+        pokeType.text = myPokemon?.type.first?.name
+        
         
         
     }

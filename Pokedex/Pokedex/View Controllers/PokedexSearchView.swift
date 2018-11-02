@@ -11,6 +11,15 @@ import UIKit
 
 class PokedexSearch: UIViewController, UISearchBarDelegate {
     
+    //Load the view data
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        pokeSearchBar.delegate = self
+        loadPokemonResult()
+    }
+    
     //Outlets
     @IBOutlet weak var pokeSearchBar: UISearchBar!
     @IBOutlet weak var foundPokeName: UILabel!
@@ -21,15 +30,7 @@ class PokedexSearch: UIViewController, UISearchBarDelegate {
     
     //Properties
     var pokeMaster: PokemonManager?
-    
-    //Search Controls
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        pokeSearchBar.delegate = self
-        loadPokemonResult()
-    }
+
     
     //Perform the Search
     
@@ -39,16 +40,16 @@ class PokedexSearch: UIViewController, UISearchBarDelegate {
         //Below is the JSON action that pulls the searched term from the API.
         PokemonImporter().getPokemon(searchedPokemon: pokeQuery, completion: { (error) in
             if let error = error {
-                NSLog("Error fetching: \(error)") //Customise this for log.
+                NSLog("Something is wrong with search: \(error)") //Message for log
                 return
             }
             DispatchQueue.main.async { //Makes this happen in the background
-                self.loadPokemonResult() //Calls your function that displays results on reload. Doesn't have to be called updateViews.
+                self.loadPokemonResult() //Calls function that displays results on reload.
             }
         }) //End of Getting Pokemon
-        
     }
     
+    //Display the found pokemon
     func loadPokemonResult() {
         if let pokemon = foundPokemon {
             foundPokeName.text = pokemon.name
@@ -56,19 +57,14 @@ class PokedexSearch: UIViewController, UISearchBarDelegate {
             foundPokeAbility.text = pokemon.abilities.first?.name
             foundPokeType.text = pokemon.type.first?.name
         } else {
-            foundPokeName.text = ""
-            foundPokeID.text = ""
-            foundPokeAbility.text = ""
-            foundPokeType.text = ""
+            foundPokeName.text = "Not found"
+            foundPokeID.text = "Not found"
+            foundPokeAbility.text = "Not found"
+            foundPokeType.text = "Not found"
         }
     }
     
     @IBAction func savePokeButton(_ sender: UIButton) {
-        
-        
-        
-        
+        pokeMaster?.newPokemon() //Create a new pokemon on save
     }
-    
-    
 }

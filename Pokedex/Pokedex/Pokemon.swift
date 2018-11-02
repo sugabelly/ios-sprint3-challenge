@@ -15,7 +15,7 @@ struct Pokemon: Equatable, Codable {
     var type: [PokemonType]
     var abilities: [Ability]
     let id: Int
-    let image: UIImage
+    let image: Data
     
     
     //Structs for the API information
