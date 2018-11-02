@@ -25,11 +25,15 @@ class PokemonManager {
     
     //Create Pokemon
     func newPokemon() {
-        
+        //Reference the Pokemon found from searching the Pokemon API
+        guard let thePokemon = foundPokemon else { return }
+        pokeball.append(thePokemon) //Add it to the Pokeball array.
+        saveToPersistence()
     }
     
     //Delete Pokemon
     func byePokemon() {
+        pokeball.remove(at: index) //Need to fix this.
         
     }
     
