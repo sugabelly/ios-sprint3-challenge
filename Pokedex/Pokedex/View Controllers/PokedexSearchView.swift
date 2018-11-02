@@ -53,8 +53,8 @@ class PokedexSearch: UIViewController, UISearchBarDelegate {
         if let pokemon = foundPokemon {
             foundPokeName.text = pokemon.name
             foundPokeID.text = "\(pokemon.id)"
-            foundPokeAbility.text = pokemon.abilities.first?.name
-            foundPokeType.text = pokemon.types.first?.name
+            foundPokeAbility.text = pokemon.abilities.first?.ability.name
+            foundPokeType.text = pokemon.types.first?.slot.description
             //foundPokePhoto.image = pokemon.sprite
         } else {
             foundPokeName.text = "Not found"

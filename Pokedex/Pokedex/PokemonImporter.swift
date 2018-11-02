@@ -35,16 +35,18 @@ func getPokemon(searchedPokemon: String, completion: @escaping (Error?) -> Void)
             return
         }
         
-        guard let data = data else { //Assigning the data that's fetched to a property for easy manipulation later.
-            NSLog("Data was not recieved.") //Print this to the Debugger log if there's an error.
-            completion(error) //Implement the error message if we fail to get data.
-            return
-        }
+        guard let foundData = data else { return } //Assigning the data that's fetched to a property for easy manipulation later.
+        
+            //NSLog("Data was not recieved. \(error?.localizedDescription)") //Print this to the Debugger log if there's an error.
+            
+            //completion(error) //Implement the error message if we fail to get data.
+            
+           
         
         do { //Same Do-Catch statement from normal Persistence but from Data above not local file
             let jsonDecoder = JSONDecoder()
             jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
-            let decodedPokemon = try jsonDecoder.decode(Pokemon.self, from: data)
+            let decodedPokemon = try jsonDecoder.decode(Pokemon.self, from: foundData)
             foundPokemon = decodedPokemon //Assign the decoded info where you want.
             completion(nil)//Set completion to nothing since decoding worked.
         }
@@ -57,7 +59,7 @@ func getPokemon(searchedPokemon: String, completion: @escaping (Error?) -> Void)
     }//End of Get Pokemon Info function.
 
     func grabImage(searchedPokemon: Pokemon, completion: @escaping (Error?, Pokemon?) -> Void) {
-        guard let requestURL = URL(string: (foundPokemon?.sprite.frontDefault)!) else {
+        guard let requestURL = URL(string: (foundPokemon?.sprites.frontDefault)!) else {
             NSLog("Couldn't get Pokemon image")
             completion(NSError(), nil)
             return
