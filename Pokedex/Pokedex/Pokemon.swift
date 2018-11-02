@@ -16,7 +16,7 @@ struct Pokemon: Codable, Equatable {
     let abilities: [Ability] //From API
     var id: Int //From API
     let sprites: Sprites //From API
-    var image: Data //Not from API
+    var image: Data? //Not from API
     
     enum CodingKeys: String, CodingKey {
         case name
