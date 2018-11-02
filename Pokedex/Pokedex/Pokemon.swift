@@ -12,10 +12,10 @@ import UIKit
 struct Pokemon: Codable, Equatable {
     
     var name: String //From API
-    let types: [TypeElement] //From API
-    let abilities: [Ability] //From API
+    let types: [TypesLevelOne] //From API
+    let abilities: [AbilitiesLevelOne] //From API
     var id: Int //From API
-    let sprites: Sprites //From API
+    let sprites: [SpritesLevelOne] //From API
     var image: Data? //Not from API
     
     enum CodingKeys: String, CodingKey {
@@ -28,32 +28,34 @@ struct Pokemon: Codable, Equatable {
     
     //Structs for the API information
     
-    struct Species: Codable {
-        let name: String
-    }
-    
-    struct TypeElement: Codable {
-        let slot: Int
-    }
-
-    struct Ability: Codable {
-        let ability: Species
+    struct TypesLevelOne: Codable, Equatable {
+        let pokemonType: TypesLevelTwo
         
-        enum CodingKeys: String, CodingKey {
-            case ability
+        struct TypesLevelTwo: Codable, Equatable {
+            let name: String
+        }
+    }
+   
+    struct AbilitiesLevelOne: Codable, Equatable {
+        let ability: AbilitiesLevelTwo
+        
+        struct AbilitiesLevelTwo: Codable, Equatable {
+            let name: String
+            
         }
     }
     
-    struct Sprites: Codable {
-        let frontDefault: String
+    struct SpritesLevelOne: Codable, Equatable {
+        let pokemonSprite: SpritesLevelTwo
         
-        enum CodingKeys: String, CodingKey {
-            case frontDefault = "front_default"
+        struct SpritesLevelTwo: Codable, Equatable {
+            let frontDefault: String
+            
         }
     }
     
     //Conforming to Equatable
-    static func == (lhs: Pokemon, rhs: Pokemon) -> Bool {
+   static func == (lhs: Pokemon, rhs: Pokemon) -> Bool {
         return lhs.id == rhs.id
-    }
+    } 
 }
