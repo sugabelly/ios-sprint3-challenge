@@ -54,7 +54,7 @@ func getPokemon(searchedPokemon: String, completion: @escaping (Error?) -> Void)
         
         do { //Same Do-Catch statement from normal Persistence but from Data above not local file
             let jsonDecoder = JSONDecoder()
-            jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+            //jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
             let decodedPokemon = try jsonDecoder.decode(Pokemon.self, from: foundData)
             grabbedPoke = decodedPokemon //Put decoded Pokemon info into a property
             
@@ -78,7 +78,7 @@ func getPokemon(searchedPokemon: String, completion: @escaping (Error?) -> Void)
         guard var grabbedPoke = webPoke else { return }
         
         
-        guard let requestURL = URL(string: ((grabbedPoke.sprites.first?.pokemonSprite.frontDefault)!)) else {
+        guard let requestURL = URL(string: (grabbedPoke.sprites.frontDefault)) else {
             NSLog("Couldn't get Pokemon image")
             completion(NSError(), nil)
             return

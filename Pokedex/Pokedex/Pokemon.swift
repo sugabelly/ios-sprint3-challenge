@@ -10,52 +10,54 @@ import Foundation
 import UIKit
 
 struct Pokemon: Codable, Equatable {
-    
-    var name: String //From API
-    let types: [TypesLevelOne] //From API
-    let abilities: [AbilitiesLevelOne] //From API
-    var id: Int //From API
-    let sprites: [SpritesLevelOne] //From API
-    var image: Data? //Not from API
+    let abilities: [AbilityElement]
+    let id: Int
+    let name: String
+    let sprites: Sprites
+    let types: [TypeElement]
+    var image: Data?
+}
+
+struct AbilityElement: Codable, Equatable {
+    let ability: TypeClass
+    let isHidden: Bool
+    let slot: Int
     
     enum CodingKeys: String, CodingKey {
-        case name
-        case types
-        case abilities
-        case id
-        case sprites
+        case ability
+        case isHidden = "is_hidden"
+        case slot
     }
+}
+
+struct TypeClass: Codable, Equatable {
+    let name: String
+    let url: String
+}
+
+struct Sprites: Codable, Equatable {
+    let backDefault, backFemale, backShiny, backShinyFemale: String
+    let frontDefault, frontFemale, frontShiny, frontShinyFemale: String
     
-    //Structs for the API information
-    
-    struct TypesLevelOne: Codable, Equatable {
-        let pokemonType: TypesLevelTwo
-        
-        struct TypesLevelTwo: Codable, Equatable {
-            let name: String
-        }
+    enum CodingKeys: String, CodingKey {
+        case backDefault = "back_default"
+        case backFemale = "back_female"
+        case backShiny = "back_shiny"
+        case backShinyFemale = "back_shiny_female"
+        case frontDefault = "front_default"
+        case frontFemale = "front_female"
+        case frontShiny = "front_shiny"
+        case frontShinyFemale = "front_shiny_female"
     }
-   
-    struct AbilitiesLevelOne: Codable, Equatable {
-        let ability: AbilitiesLevelTwo
-        
-        struct AbilitiesLevelTwo: Codable, Equatable {
-            let name: String
-            
-        }
-    }
-    
-    struct SpritesLevelOne: Codable, Equatable {
-        let pokemonSprite: SpritesLevelTwo
-        
-        struct SpritesLevelTwo: Codable, Equatable {
-            let frontDefault: String
-            
-        }
-    }
+}
+
+struct TypeElement: Codable, Equatable {
+    let slot: Int
+    let type: TypeClass
+}
     
     //Conforming to Equatable
-   static func == (lhs: Pokemon, rhs: Pokemon) -> Bool {
+func == (lhs: Pokemon, rhs: Pokemon) -> Bool {
         return lhs.id == rhs.id
     } 
-}
+

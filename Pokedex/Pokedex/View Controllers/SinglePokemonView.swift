@@ -28,7 +28,7 @@ class SinglePokemonView: UIViewController {
         pokeID.text = "\(String(describing: myPokemon?.id))"
         //pokePhoto.image =
         pokeAbility.text = myPokemon?.abilities.first?.ability.name
-        pokeType.text = myPokemon?.types.first?.pokemonType.name
+        pokeType.text = myPokemon?.types.first?.type.name
         
         
         
